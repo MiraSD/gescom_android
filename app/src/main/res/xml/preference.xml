@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="Réseau">
+        <EditTextPreference
+            android:key="adresseIp"
+            android:dialogTitle="Adresse ip"
+            android:positiveButtonText="Ok"
+            android:negativeButtonText="Annuler"
+            android:title="Titre"
+            android:summary="Adresse IP" />
+        <EditTextPreference
+            android:key="port"
+            android:dialogTitle="Port"
+            android:positiveButtonText="Ok"
+            android:negativeButtonText="Annuler"
+            android:title="Titre"
+            android:summary="Port"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

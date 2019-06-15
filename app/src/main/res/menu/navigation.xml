@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/item12" android:titleCondensed="Item 2" android:title="Structure">
+        <menu>
+            <item android:id="@+id/item3" android:title="Famille d'articles"/>
+            <item android:id="@+id/item4" android:title="Articles"/>
+            <item android:id="@+id/item5" android:title="Clients"/>
+            <item android:id="@+id/item6" android:title="Fournisseurs"/>
+            <item android:id="@+id/item7" android:title="Dépot"/>
+
+        </menu>
+    </item>
+
+    <item android:id="@+id/item13" android:titleCondensed="Item 3" android:title="Configuration">
+        <menu>
+
+            <item android:id="@+id/item8" android:title="Configuration"/>
+
+        </menu>
+    </item>
+
+
+
+
+</menu>
