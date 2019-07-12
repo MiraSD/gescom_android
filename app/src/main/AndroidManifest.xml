@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gescom_mobile">
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +21,29 @@
             android:label="@string/preferences" >
         </activity>
 
+        <activity
+            android:name="com.example.gescom_mobile.lists.ProductsList"
+            android:label="@string/produit" >
+        </activity>
+
+        <activity
+            android:name="com.example.gescom_mobile.lists.UtilisateurList"
+            android:label="@string/users" >
+        </activity>
+
+        <activity
+            android:name="com.example.gescom_mobile.lists.DepotsList"
+            android:label="@string/depots" >
+        </activity>
+
+        <activity
+            android:name="com.example.gescom_mobile.lists.PartnersList"
+            android:label="@string/clients" >
+        </activity>
+        <activity
+            android:name="com.example.gescom_mobile.creators.ProductsAdd"
+            android:label="@string/createProduct" >
+        </activity>
     </application>
 
 </manifest>

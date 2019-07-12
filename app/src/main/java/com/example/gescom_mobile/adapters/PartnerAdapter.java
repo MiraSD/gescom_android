@@ -27,20 +27,13 @@ public class PartnerAdapter extends BaseAdapter {
         if (view == null) {
             view = inflater.inflate(R.layout.partnerdata, null);
         }
-        TextView partnerid = (TextView) view.findViewById(R.id.partnerid);
-        partnerid.setText(String.valueOf(partner.id));
+
         TextView partnername = (TextView) view.findViewById(R.id.partnername);
         partnername.setText(partner.nom);
         TextView partnerlastname = (TextView) view.findViewById(R.id.partnerlastname);
         partnerlastname.setText(partner.prenom);
         TextView partnermatFiscal = (TextView) view.findViewById(R.id.partnermatFiscal);
         partnermatFiscal.setText(partner.matFiscal);
-        TextView partneradress= (TextView) view.findViewById(R.id.partneradress);
-        partneradress.setText(partner.adress);
-        TextView partnertel= (TextView) view.findViewById(R.id.partnertel);
-        partnertel.setText(partner.tel);
-        TextView partnertype= (TextView) view.findViewById(R.id.partnertype);
-        partnertype.setText(partner.type);
 
 
 

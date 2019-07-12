@@ -1,83 +1,84 @@
 package com.example.gescom_mobile.creators;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.gescom_mobile.R;
 import com.example.gescom_mobile.helpers.AppMenu;
+import com.example.gescom_mobile.helpers.RequestHandler;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 public class DepotsAdd extends AppMenu {
 
     String json_string;
     JSONObject jsonObject;
     JSONArray jsonArray;
+    Button submitDepot;
+    String stringUrl;
+    EditText depotName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.depots_add);
+
+        submitDepot = findViewById(R.id.submitDepot);
+        depotName = findViewById(R.id.depotName);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String url = preferences.getString("adresseIp", "127.0.0.1");
+        String port = preferences.getString("port", "80");
+        String suffix = preferences.getString("suffix", "/api/");
+
+        stringUrl = "http://" + url + ":" + port + suffix + "depot";
+
+        this.submitDepot.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+                try {
+                    new DepotsAdd.RequestAsync().execute(stringUrl,depotName.getText().toString()).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
-    class BackegroundTask extends AsyncTask<Void,Void,String>
-    {
-        String json_url;
-        String JSON_STRING;
+    public class RequestAsync extends AsyncTask<String, Void, String> {
+
 
         @Override
-        protected void onPreExecute() {
-
-            json_url = "http://10.0.2.2/webapp/index.php";
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
+        protected String doInBackground(String... strings) {
             try {
-                URL url = new URL(json_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-                httpURLConnection.setDoOutput(true);
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder stringBuilder = new StringBuilder();
+                JSONObject params = new JSONObject();
+                try {
+                    params.put("nom", strings[1]);
 
-                while ((JSON_STRING = bufferedReader.readLine()) != null){
-                    stringBuilder.append(JSON_STRING+"\n");
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-                return stringBuilder.toString().trim();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                return RequestHandler.sendPost(strings[0],params);
+            } catch (Exception e) {
+                return new String("Exception: " + e.getMessage());
             }
-
-            return null;
-        }
-
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            json_string = result;
-
-
+            super.onPostExecute(result);
         }
     }
 

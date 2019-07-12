@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Gescom_mobile</string>
     <string name="preferences">Configuration</string>
+    <string name="produit">Produits</string>
+    <string name="users">Utilisateurs</string>
+    <string name="depots">Depots</string>
+    <string name="clients">Clients</string>
+    <string name="createProduct">Créer article</string>
 </resources>

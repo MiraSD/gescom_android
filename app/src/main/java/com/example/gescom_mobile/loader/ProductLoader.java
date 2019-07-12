@@ -1,9 +1,12 @@
 package com.example.gescom_mobile.loader;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
+import com.example.gescom_mobile.helpers.RequestHandler;
 import com.example.gescom_mobile.model.Product;
 
 
@@ -21,11 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductLoader extends AsyncTaskLoader<List<Product>> {
+
     public ProductLoader(Context context) {
         super(context);
     }
 
-    final String stringUrl = "http://192.168.1.3:8000/api/produit/";
+
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+    String url = preferences.getString("adresseIp", "127.0.0.1");
+    String port = preferences.getString("port", "80");
+    String prefix = preferences.getString("prefix", "/api/");
+
+    final String stringUrl = "http://" + url + ":" + port + prefix + "produit";
 
 
     @Override
@@ -34,35 +44,8 @@ public class ProductLoader extends AsyncTaskLoader<List<Product>> {
         String inputLine;
         List<Product> list = new ArrayList<Product>();
         try {
-            //Create a URL object holding our url
-            URL myUrl = new URL(stringUrl);
-            //Create a connection
-            HttpURLConnection connection =(HttpURLConnection)
-                    myUrl.openConnection();
-            //Set methods and timeouts
-            connection.setRequestMethod("GET");
-            connection.setReadTimeout(1500);
-            connection.setConnectTimeout(1500);
 
-            //Connect to our url
-            connection.connect();
-
-            //Create a new InputStreamReader
-            InputStreamReader streamReader = new
-                    InputStreamReader(connection.getInputStream());
-            //Create a new buffered reader and String Builder
-            BufferedReader reader = new BufferedReader(streamReader);
-            StringBuilder stringBuilder = new StringBuilder();
-            //Check if the line we are reading is not null
-            while((inputLine = reader.readLine()) != null){
-                stringBuilder.append(inputLine);
-            }
-            //Close our InputStream and Buffered reader
-            reader.close();
-            streamReader.close();
-            //Set our result equal to our stringBuilder
-            result = stringBuilder.toString();
-
+            result = RequestHandler.sendGet(stringUrl);
             JSONArray productsArray = new JSONArray(result);
 
             for(int i = 0; i < productsArray.length(); i++){

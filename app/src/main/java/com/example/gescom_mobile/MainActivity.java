@@ -1,19 +1,27 @@
 package com.example.gescom_mobile;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.example.gescom_mobile.helpers.LoginTask;
+import com.example.gescom_mobile.helpers.RequestHandler;
 import com.example.gescom_mobile.lists.ProductsList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends Activity {
 
@@ -22,22 +30,10 @@ public class MainActivity extends Activity {
     private Button bLogin;
     private Button configuration ;
     private EditText etEmailAddress, etPassword;
-    private final Class<?> LOGIN_DESTINATION = ProductsList.class;
-    private SharedPreferences sharedPreferences;
+    String stringUrl;
+    Context mContext;
 
-    public void login() {
-        this.sharedPreferences.edit().putBoolean("user_logged_in", true)
-                .commit();
-        this.sharedPreferences
-                .edit()
-                .putString("username", this.etEmailAddress.getText().toString())
-                .commit();
-        this.sharedPreferences.edit()
-                .putString("password", this.etPassword.getText().toString())
-                .commit();
-        this.startActivityForResult(new Intent(MainActivity.this,
-                this.LOGIN_DESTINATION), MainActivity.LOGIN_REQUEST_CODE);
-    }
+
 
     /*
      * (non-Javadoc)
@@ -45,15 +41,6 @@ public class MainActivity extends Activity {
      */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        // get shared preferences
-        this.sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
-
-        // check if user is logged in already
-        if (this.sharedPreferences.getBoolean("user_logged_in", false)) {
-            // user is logged in, bypass activity
-            this.startActivityForResult(new Intent(MainActivity.this,
-                    this.LOGIN_DESTINATION), MainActivity.LOGIN_REQUEST_CODE);
-        }
 
         super.onCreate(savedInstanceState);
 
@@ -62,6 +49,21 @@ public class MainActivity extends Activity {
         this.configuration = (Button) this.findViewById(R.id.configuration);
         this.etEmailAddress = (EditText) this.findViewById(R.id.username);
         this.etPassword = (EditText) this.findViewById(R.id.password);
+        mContext = this;
+
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String url = preferences.getString("adresseIp", "127.0.0.1");
+        String port = preferences.getString("port", "80");
+        String suffix = preferences.getString("suffix", "/api/");
+        String user = preferences.getString("userid", "/api/");
+
+        if (user != null || user != ""){
+            Intent intent = new Intent(MainActivity.this, ProductsList.class);
+            startActivity(intent);
+        }
+
+        stringUrl = "http://" + url + ":" + port + suffix + "login";
 
         this.bLogin.setOnClickListener(new View.OnClickListener() {
             /*
@@ -70,9 +72,15 @@ public class MainActivity extends Activity {
              */
             @Override
             public void onClick(final View v) {
-                new LoginTask(MainActivity.this).execute(
-                        MainActivity.this.etEmailAddress.getText().toString(),
-                        MainActivity.this.etPassword.getText().toString());
+
+                try {
+                    new MainActivity.RequestAsync(mContext).execute(stringUrl,etEmailAddress.getText().toString(),etPassword.getText().toString()).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -90,33 +98,68 @@ public class MainActivity extends Activity {
         });
     }
 
-    public void showLoginError(final String result) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(
-                MainActivity.this);
-        if (builder != null) {
-            builder.setPositiveButton("ok",
-                    new DialogInterface.OnClickListener() {
-                        /*
-                         * (non-Javadoc)
-                         * @see
-                         * android.content.DialogInterface.OnClickListener#onClick
-                         * (android.content.DialogInterface, int)
-                         */
-                        @Override
-                        public void onClick(DialogInterface dialog,
-                                            final int which) {
-                            if (dialog != null) {
-                                dialog.cancel();
-                                dialog = null;
-                            }
-                        }
-                    });
-            builder.setMessage("Invalid Username or Password.");
-            final AlertDialog alert = builder.create();
-            if (alert != null) {
-                alert.setCancelable(false);
-                alert.show();
+    public class RequestAsync extends AsyncTask<String, Void, String> {
+
+        Context context;
+
+        public RequestAsync(Context context)
+        {
+            this.context=context;
+        }
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                JSONObject params = new JSONObject();
+                try {
+                    params.put("username", strings[1]);
+                    params.put("password", strings[2]);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.i("BOURAOUI url",strings[0]);
+                String res  =  RequestHandler.sendPost(strings[0],params);
+                return res;
+            } catch (Exception e) {
+
+
+                Log.i("BOURAOUI",e.getMessage());
+                return new String("Exception: " + e.getMessage());
             }
         }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            super.onPostExecute(result);
+            try {
+
+
+                    JSONObject jsonObject = new JSONObject(result);
+                    if ((boolean) jsonObject.get("name"))
+                    {
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                        JSONObject user = new JSONObject(result);
+                        preferences.getString("userid", jsonObject.get("user")+ " ");
+                        Intent intent = new Intent(MainActivity.this, ProductsList.class);
+                        startActivity(intent);
+                    }
+
+
+            } catch (JSONException | NullPointerException e) {
+                Toast.makeText(context,
+                        "Error...",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+
+
+        }
     }
+
+
+
+
 }

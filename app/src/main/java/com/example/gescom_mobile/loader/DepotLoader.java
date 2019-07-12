@@ -1,9 +1,12 @@
 package com.example.gescom_mobile.loader;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
+import com.example.gescom_mobile.helpers.RequestHandler;
 import com.example.gescom_mobile.model.Depot;
 
 
@@ -21,74 +24,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DepotLoader extends AsyncTaskLoader<List<Depot>> {
-public DepotLoader(Context context) {
+    public DepotLoader(Context context) {
         super(context);
-        }
-
-final String stringUrl = "http://192.168.1.38/symfony/web/depot_api";
+    }
 
 
-@Override
-public List<Depot> loadInBackground(){
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+    String url = preferences.getString("adresseIp", "127.0.0.1");
+    String port = preferences.getString("port", "80");
+    String suffix = preferences.getString("suffix", "/api/");
+
+    final String stringUrl = "http://" + url + ":" + port + suffix + "depot";
+
+
+    @Override
+    public List<Depot> loadInBackground() {
         String result;
         String inputLine;
         List<Depot> list = new ArrayList<Depot>();
         try {
-        //Create a URL object holding our url
-        URL myUrl = new URL(stringUrl);
-        //Create a connection
-        HttpURLConnection connection =(HttpURLConnection)
-        myUrl.openConnection();
-        //Set methods and timeouts
-        connection.setRequestMethod("GET");
-        connection.setReadTimeout(1500);
-        connection.setConnectTimeout(1500);
+            result = RequestHandler.sendGet(stringUrl);
 
-        //Connect to our url
-        connection.connect();
+            JSONArray DepotArray = new JSONArray(result);
 
-        //Create a new InputStreamReader
-        InputStreamReader streamReader = new
-                InputStreamReader(connection.getInputStream());
-        //Create a new buffered reader and String Builder
-        BufferedReader reader = new BufferedReader(streamReader);
-        StringBuilder stringBuilder = new StringBuilder();
-        //Check if the line we are reading is not null
-        while((inputLine = reader.readLine()) != null){
-        stringBuilder.append(inputLine);
-        }
-        //Close our InputStream and Buffered reader
-        reader.close();
-        streamReader.close();
-        //Set our result equal to our stringBuilder
-        result = stringBuilder.toString();
+            for (int i = 0; i < DepotArray.length(); i++) {
+                Log.i("Bouraoui", String.valueOf(DepotArray.getJSONObject(i)));
+                list.add(new Depot(DepotArray.getJSONObject(i).getInt("id"),
+                        DepotArray.getJSONObject(i).getString("nom")));
 
-        JSONArray DepotArray = new JSONArray(result);
-
-        for(int i = 0; i < DepotArray.length(); i++){
-        Log.i("Bouraoui", String.valueOf(DepotArray.getJSONObject(i)));
-        list.add(new Depot(DepotArray.getJSONObject(i).getInt("id"),
-                DepotArray.getJSONObject(i).getString("nom")));
-
-        }
-
+            }
 
 
         } catch (ProtocolException e) {
-        Log.i("Bouraoui", "1");
-        e.printStackTrace();
+            Log.i("Bouraoui", "1");
+            e.printStackTrace();
         } catch (MalformedURLException e) {
-        Log.i("Bouraoui", "2");
-        e.printStackTrace();
+            Log.i("Bouraoui", "2");
+            e.printStackTrace();
         } catch (IOException e) {
-        Log.i("Bouraoui", "3");
-        e.printStackTrace();
+            Log.i("Bouraoui", "3");
+            e.printStackTrace();
         } catch (JSONException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
-
 
 
         return list;
-        }
+    }
 }

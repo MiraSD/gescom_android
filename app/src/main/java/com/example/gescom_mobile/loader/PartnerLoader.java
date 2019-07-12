@@ -1,9 +1,12 @@
 package com.example.gescom_mobile.loader;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
+import com.example.gescom_mobile.helpers.RequestHandler;
 import com.example.gescom_mobile.model.Partner;
 
 
@@ -25,47 +28,26 @@ public class PartnerLoader extends AsyncTaskLoader<List<Partner>> {
         super(context);
     }
 
-    final String stringUrl = "http://192.168.1.38/symfony/web/partner_api";
+
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+    String url = preferences.getString("adresseIp", "127.0.0.1");
+    String port = preferences.getString("port", "80");
+    String suffix = preferences.getString("suffix", "/api/");
+
+    final String stringUrl = "http://" + url + ":" + port + suffix + "partners";
 
 
     @Override
-    public List<Partner>  loadInBackground(){
+    public List<Partner> loadInBackground() {
         String result;
         String inputLine;
         List<Partner> list = new ArrayList<Partner>();
         try {
-            //Create a URL object holding our url
-            URL myUrl = new URL(stringUrl);
-            //Create a connection
-            HttpURLConnection connection =(HttpURLConnection)
-                    myUrl.openConnection();
-            //Set methods and timeouts
-            connection.setRequestMethod("GET");
-            connection.setReadTimeout(1500);
-            connection.setConnectTimeout(1500);
-
-            //Connect to our url
-            connection.connect();
-
-            //Create a new InputStreamReader
-            InputStreamReader streamReader = new
-                    InputStreamReader(connection.getInputStream());
-            //Create a new buffered reader and String Builder
-            BufferedReader reader = new BufferedReader(streamReader);
-            StringBuilder stringBuilder = new StringBuilder();
-            //Check if the line we are reading is not null
-            while((inputLine = reader.readLine()) != null){
-                stringBuilder.append(inputLine);
-            }
-            //Close our InputStream and Buffered reader
-            reader.close();
-            streamReader.close();
-            //Set our result equal to our stringBuilder
-            result = stringBuilder.toString();
+            result = RequestHandler.sendGet(stringUrl);
 
             JSONArray partnerArray = new JSONArray(result);
 
-            for(int i = 0; i < partnerArray.length(); i++){
+            for (int i = 0; i < partnerArray.length(); i++) {
                 Log.i("Bouraoui", String.valueOf(partnerArray.getJSONObject(i)));
 
                 list.add(new Partner(partnerArray.getJSONObject(i).getInt("id"),
@@ -77,7 +59,6 @@ public class PartnerLoader extends AsyncTaskLoader<List<Partner>> {
                         partnerArray.getJSONObject(i).getInt("type")));
 
             }
-
 
 
         } catch (ProtocolException e) {
@@ -92,7 +73,6 @@ public class PartnerLoader extends AsyncTaskLoader<List<Partner>> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
 
         return list;

@@ -28,9 +28,7 @@ public class DepotsList extends AppMenu implements LoaderManager.LoaderCallbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_partners);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_depot);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -42,7 +40,7 @@ public class DepotsList extends AppMenu implements LoaderManager.LoaderCallbacks
             }
         });
         depotAdapter = new DepotAdapter(this, new ArrayList<Depot>());
-        ListView depotListView = (ListView) findViewById(R.id.products);
+        ListView depotListView = (ListView) findViewById(R.id.depots);
         depotListView.setAdapter(depotAdapter);
         getSupportLoaderManager().initLoader(1, null, this).forceLoad();
 

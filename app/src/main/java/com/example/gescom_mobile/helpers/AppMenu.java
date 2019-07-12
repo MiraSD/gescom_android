@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.gescom_mobile.Configuration;
+import com.example.gescom_mobile.lists.DepotsList;
 import com.example.gescom_mobile.lists.PartnersList;
 import com.example.gescom_mobile.lists.ProductsList;
 import com.example.gescom_mobile.R;
@@ -35,8 +36,10 @@ public class AppMenu extends AppCompatActivity {
                 Intent intentPartners = new Intent(this, PartnersList.class);
             case R.id.item13:
                 Intent intentConfig = new Intent(this, Configuration.class);
+            case R.id.item7:
+                Intent intentDepot = new Intent(this, DepotsList.class);
 
-                startActivity(intentConfig);
+                startActivity(intentDepot);
                 return true;
         }
         return super.onOptionsItemSelected(item);
