@@ -6,4 +6,7 @@
     <string name="depots">Depots</string>
     <string name="clients">Clients</string>
     <string name="createProduct">Créer article</string>
+    <string name="createPartner">Ajouter client</string>
+    <string name="createDepot">Ajouter depot</string>
+    <string name="showDepot">Afficher dépot</string>
 </resources>

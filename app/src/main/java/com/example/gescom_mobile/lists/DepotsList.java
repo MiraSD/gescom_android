@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.gescom_mobile.creators.DepotsAdd;
 import com.example.gescom_mobile.singles.DepotSingle;
 import com.example.gescom_mobile.creators.PartnersAdd;
 import com.example.gescom_mobile.R;
@@ -34,7 +35,7 @@ public class DepotsList extends AppMenu implements LoaderManager.LoaderCallbacks
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), PartnersAdd.class);
+                Intent intent = new Intent(view.getContext(), DepotsAdd.class);
 
                 startActivity(intent);
             }

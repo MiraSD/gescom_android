@@ -44,6 +44,18 @@
             android:name="com.example.gescom_mobile.creators.ProductsAdd"
             android:label="@string/createProduct" >
         </activity>
+        <activity
+            android:name="com.example.gescom_mobile.creators.PartnersAdd"
+            android:label="@string/createPartner" >
+        </activity>
+        <activity
+            android:name="com.example.gescom_mobile.creators.DepotsAdd"
+            android:label="@string/createDepot" >
+        </activity>
+        <activity
+            android:name="com.example.gescom_mobile.singles.DepotSingle"
+            android:label="@string/showDepot" >
+        </activity>
     </application>
 
 </manifest>
