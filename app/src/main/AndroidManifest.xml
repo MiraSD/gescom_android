@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gescom_mobile">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".creators.ProductCategoryAdd"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,44 +21,31 @@
         </activity>
         <activity
             android:name=".Configuration"
-            android:label="@string/preferences" >
-        </activity>
-
+            android:label="@string/preferences"></activity>
         <activity
-            android:name="com.example.gescom_mobile.lists.ProductsList"
-            android:label="@string/produit" >
-        </activity>
-
+            android:name=".lists.ProductsList"
+            android:label="@string/produit"></activity>
         <activity
-            android:name="com.example.gescom_mobile.lists.UtilisateurList"
-            android:label="@string/users" >
-        </activity>
-
+            android:name=".lists.UtilisateurList"
+            android:label="@string/users"></activity>
         <activity
-            android:name="com.example.gescom_mobile.lists.DepotsList"
-            android:label="@string/depots" >
-        </activity>
-
+            android:name=".lists.DepotsList"
+            android:label="@string/depots"></activity>
         <activity
-            android:name="com.example.gescom_mobile.lists.PartnersList"
-            android:label="@string/clients" >
-        </activity>
+            android:name=".lists.PartnersList"
+            android:label="@string/clients"></activity>
         <activity
-            android:name="com.example.gescom_mobile.creators.ProductsAdd"
-            android:label="@string/createProduct" >
-        </activity>
+            android:name=".creators.ProductsAdd"
+            android:label="@string/createProduct"></activity>
         <activity
-            android:name="com.example.gescom_mobile.creators.PartnersAdd"
-            android:label="@string/createPartner" >
-        </activity>
+            android:name=".creators.PartnersAdd"
+            android:label="@string/createPartner"></activity>
         <activity
-            android:name="com.example.gescom_mobile.creators.DepotsAdd"
-            android:label="@string/createDepot" >
-        </activity>
+            android:name=".creators.DepotsAdd"
+            android:label="@string/createDepot"></activity>
         <activity
-            android:name="com.example.gescom_mobile.singles.DepotSingle"
-            android:label="@string/showDepot" >
-        </activity>
+            android:name=".singles.DepotSingle"
+            android:label="@string/showDepot"></activity>
     </application>
 
 </manifest>

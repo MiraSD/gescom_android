@@ -15,6 +15,18 @@
         android:layout_height="wrap_content"
         android:hint="Name"
         android:text="" />
+    <EditText
+        android:id="@+id/utilisateurprenom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:text="" />
+    <EditText
+        android:id="@+id/utilemail"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:text="" />
 
     <Button
         android:id="@+id/submitUtilisat"
